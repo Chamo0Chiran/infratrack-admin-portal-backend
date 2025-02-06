@@ -11,10 +11,12 @@ import java.util.Optional;
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
+    private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+    public AdminService(AdminRepository adminRepository, JWTService jwtService, PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
+        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -24,7 +26,7 @@ public class AdminService {
         if (adminOptional.isPresent()) {
             Admin admin = adminOptional.get();
             if (passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
-                return ResponseEntity.ok("Login successful");
+                return ResponseEntity.ok(jwtService.generateToken(request.getAdminNo()));
             } else {
                 return ResponseEntity.status(401).body("Invalid credentials");
             }

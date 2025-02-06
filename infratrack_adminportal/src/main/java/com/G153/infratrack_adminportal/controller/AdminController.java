@@ -20,6 +20,7 @@ public class AdminController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody AdminLoginRequest request) {
+        System.out.println(request);
         return adminService.loginAdmin(request);
     }
 
