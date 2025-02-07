@@ -21,12 +21,12 @@ public class AdminService {
     }
 
     public ResponseEntity<String> loginAdmin(AdminLoginRequest request) {
-        Optional<Admin> adminOptional = adminRepository.findByAdminNo(request.getAdminNo());
+        Optional<Admin> adminOptional = adminRepository.findByAdminId(request.getAdminId());
 
         if (adminOptional.isPresent()) {
             Admin admin = adminOptional.get();
             if (passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
-                return ResponseEntity.ok(jwtService.generateToken(request.getAdminNo()));
+                return ResponseEntity.ok(jwtService.generateToken(request.getAdminId()));
             } else {
                 return ResponseEntity.status(401).body("Invalid credentials");
             }
@@ -35,7 +35,7 @@ public class AdminService {
     }
 
     public ResponseEntity<String> registerAdmin(Admin admin) {
-        if (adminRepository.findByAdminNo(admin.getAdminNo()).isPresent()) {
+        if (adminRepository.findByAdminId(admin.getAdminId()).isPresent()) {
             return ResponseEntity.badRequest().body("Admin already exists");
         }
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));  // Hash password
